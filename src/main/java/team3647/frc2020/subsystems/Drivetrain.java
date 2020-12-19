@@ -22,7 +22,7 @@ public class Drivetrain implements PeriodicSubsystem {
     private VictorSPX leftSlave1;
     private VictorSPX leftSlave2;
     private VictorSPX rightSlave1;
-    private VictorSPX rightSlave2;
+    private VictorSPX rightSlave2; 
 
     private CANifier canifier;
 
