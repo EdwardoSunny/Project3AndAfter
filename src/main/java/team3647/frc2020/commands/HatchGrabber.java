@@ -30,6 +30,7 @@ public class HatchGrabber extends CommandBase {
     @Override
     public void execute() {
         if (cargoDetection) {
+            System.out.println();
             if (velocity >= 4 && isOn) {
                 hatchGrabber.set(true);
             } else {

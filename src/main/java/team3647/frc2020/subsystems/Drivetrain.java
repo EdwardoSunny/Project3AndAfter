@@ -34,11 +34,6 @@ public class Drivetrain implements PeriodicSubsystem {
     private double throttleMulti;
     private boolean isSlowed;
 
-    private Configuration leftMasterConfig;
-    private Configuration rightMasterConfig;
-
-    private Configuration leftSlave1Config;
-
 
     public periodicIO p_IO = new periodicIO();
     public static final double kDefaultDeadband = 0.02;
@@ -46,7 +41,7 @@ public class Drivetrain implements PeriodicSubsystem {
 
     protected double m_deadband = kDefaultDeadband;
     protected double m_maxOutput = kDefaultMaxOutput;
-    private boolean squareInputs = true;
+    private boolean squareInputs = false;
 
     //because config is already inverted
     private double m_rightSideInvertMultiplier = 1.0;
@@ -123,9 +118,9 @@ public class Drivetrain implements PeriodicSubsystem {
           }
         }
     
-        leftMaster.set(ControlMode.PercentOutput, MathUtil.clamp(leftMotorOutput, -1.0, 1.0) * m_maxOutput);
-        double maxOutput = m_maxOutput * m_rightSideInvertMultiplier;
-        rightMaster.set(ControlMode.PercentOutput, MathUtil.clamp(rightMotorOutput, -1.0, 1.0) * maxOutput);
+        leftMaster.set(ControlMode.PercentOutput, MathUtil.clamp(leftMotorOutput, -1.0, 1.0));
+        
+        rightMaster.set(ControlMode.PercentOutput, MathUtil.clamp(rightMotorOutput, -1.0, 1.0));
     }
 
     private double applyDeadband(double value, double deadband) {
@@ -151,7 +146,8 @@ public class Drivetrain implements PeriodicSubsystem {
     public void resetEncoders() {
         leftMasterEncoderValue = 0;
         rightMasterEncoderValue = 0;
-
+        leftMaster.setSelectedSensorPosition(0);
+        rightMaster.setSelectedSensorPosition(0);
         leftVelocity = 0;
         rightVelocity = 0;
     }
