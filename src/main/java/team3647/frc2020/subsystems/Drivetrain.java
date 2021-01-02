@@ -12,9 +12,11 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import team3647.frc2020.robot.Constants;
+import team3647.lib.GroupPrinter;
 import team3647.lib.drivers.TalonSRXFactory;
 import team3647.lib.drivers.VictorSPXFactory;
 import team3647.lib.drivers.TalonSRXFactory.Configuration;
+
 
 public class Drivetrain implements PeriodicSubsystem {
     private TalonSRX leftMaster;
@@ -26,13 +28,14 @@ public class Drivetrain implements PeriodicSubsystem {
 
     private CANifier canifier;
 
-    private double leftMasterEncoderValue;
-    private double rightMasterEncoderValue;
+    private double leftMasterEncoderValueRaw;
+    private double rightMasterEncoderValueRaw;
     private double leftVelocity;
     private double rightVelocity;
 
     private double throttleMulti;
     private boolean isSlowed;
+    private GroupPrinter m_printer;
 
 
     public periodicIO p_IO = new periodicIO();
@@ -61,6 +64,7 @@ public class Drivetrain implements PeriodicSubsystem {
         
         rightSlave1 = VictorSPXFactory.createVictor(rightSlaveConfig);
         rightSlave2 = VictorSPXFactory.createVictor(rightSlaveConfig);
+        m_printer = GroupPrinter.getInstance();
 
         leftSlave1.follow(leftMaster);
         leftSlave2.follow(leftMaster);
@@ -136,16 +140,16 @@ public class Drivetrain implements PeriodicSubsystem {
       }
 
     public void updateEncoders() {
-        leftMasterEncoderValue = leftMaster.getSelectedSensorPosition();
-        rightMasterEncoderValue = rightMaster.getSelectedSensorPosition();
+        leftMasterEncoderValueRaw = leftMaster.getSelectedSensorPosition();
+        rightMasterEncoderValueRaw = rightMaster.getSelectedSensorPosition();
 
         leftVelocity = leftMaster.getSelectedSensorVelocity();
         rightVelocity = rightMaster.getSelectedSensorVelocity();
     }
 
     public void resetEncoders() {
-        leftMasterEncoderValue = 0;
-        rightMasterEncoderValue = 0;
+        leftMasterEncoderValueRaw = 0;
+        rightMasterEncoderValueRaw = 0;
         leftMaster.setSelectedSensorPosition(0);
         rightMaster.setSelectedSensorPosition(0);
         leftVelocity = 0;
@@ -153,8 +157,8 @@ public class Drivetrain implements PeriodicSubsystem {
     }
 
     public void updateDistanceTraveled() {
-        double distanceL = leftMasterEncoderValue * 6 * Math.PI;
-        double distanceR = rightMasterEncoderValue * 6 * Math.PI;
+        double distanceL = leftMasterEncoderValueRaw * 6 * Math.PI;
+        double distanceR = rightMasterEncoderValueRaw * 6 * Math.PI;
         p_IO.distanceTraveled = (distanceL + distanceR)/2;
     }
 

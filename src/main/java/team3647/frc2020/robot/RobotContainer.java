@@ -36,6 +36,14 @@ public class RobotContainer {
     return autonomousCommand;
   }
 
+  public boolean getDrivetrainSlowed() {
+    return dt.getSlow();
+  }
+
+  public boolean getCargoCondition() {
+    return dt.cargoDetection();
+  }
+
   private void configButtonBindings(){
     controller.buttonX.whenActive(new InstantCommand(() -> dt.setSlow(!dt.getSlow()), dt));
     controller.leftBumper.whenActive(new HatchGrabber(dt::getdtVelocity, true, dt::cargoDetection));

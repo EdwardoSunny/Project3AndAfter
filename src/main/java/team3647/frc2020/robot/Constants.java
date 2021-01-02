@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-import team3647.lib.drivers.SparkMaxFactory;
 import team3647.lib.drivers.TalonSRXFactory;
 import team3647.lib.drivers.VictorSPXFactory;
 
@@ -27,6 +26,11 @@ public final class Constants {
     public static final int stallCurrent = 35;
     public static final int maxCurrent = 60;
     public static final int driveContinuousCurrent = 35;
+
+    public static int kElevatorContinuousCurrent = 25;
+    public static final int elevatorBeamBreakPin = 8;
+    
+    public static final int kTimeoutMs = 10;
 
 
     public static final TalonSRXFactory.Configuration leftMasterConfig =
