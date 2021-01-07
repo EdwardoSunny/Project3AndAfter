@@ -21,6 +21,10 @@ public final class Constants {
     public static final int rightMasterPin = 3;
     public static final int rightSlavePin = 4;
 
+    public static final int ElevatorGearboxSRXPin = 8;
+    public static final int ElevatorGearboxSPX1Pin = 10;
+	public static final int ElevatorGearboxSPX2Pin = 11; 
+
     public static final int canifierID = 0;
 
     public static final int stallCurrent = 35;
@@ -48,5 +52,18 @@ public final class Constants {
 
     public static final VictorSPXFactory.Configuration rightSlaveConfig =
     new VictorSPXFactory.Configuration(leftSlavePin).configMaxOutput(maxCurrent).setInverted(true).configMaxReverseOutput(stallCurrent);
+
+    public static final TalonSRXFactory.Configuration ElevatorMasterConfig =
+        new TalonSRXFactory.Configuration(ElevatorGearboxSRXPin, true)
+                .currentLimiting(true, maxCurrent, stallCurrent, driveContinuousCurrent)
+                .voltageCompensation(true, 12.0);
+    
+    public static final VictorSPXFactory.Configuration ElevatorSPX1Config = 
+    new VictorSPXFactory.Configuration(ElevatorGearboxSPX1Pin).configMaxOutput(maxCurrent).setInverted(false).configMaxReverseOutput(stallCurrent);
+
+    public static final VictorSPXFactory.Configuration ElevatorSPX2Config = 
+    new VictorSPXFactory.Configuration(ElevatorGearboxSPX2Pin).configMaxOutput(maxCurrent).setInverted(false)
+                    .configMaxReverseOutput(stallCurrent);
+
 
 }

@@ -28,8 +28,8 @@ public class Drivetrain implements PeriodicSubsystem {
 
     private CANifier canifier;
 
-    private double leftMasterEncoderValueRaw;
-    private double rightMasterEncoderValueRaw;
+    private double leftMasterEncoderValue;
+    private double rightMasterEncoderValue;
     private double leftVelocity;
     private double rightVelocity;
 
@@ -140,16 +140,18 @@ public class Drivetrain implements PeriodicSubsystem {
       }
 
     public void updateEncoders() {
-        leftMasterEncoderValueRaw = leftMaster.getSelectedSensorPosition();
-        rightMasterEncoderValueRaw = rightMaster.getSelectedSensorPosition();
+        //convert to revolution
+        leftMasterEncoderValue = (leftMaster.getSelectedSensorPosition()/4096);
+        rightMasterEncoderValue = (rightMaster.getSelectedSensorPosition()/4096);
 
-        leftVelocity = leftMaster.getSelectedSensorVelocity();
-        rightVelocity = rightMaster.getSelectedSensorVelocity();
+        //convert from ticks/100ms to rev/sex to ft/s
+        leftVelocity = leftMaster.getSelectedSensorVelocity() * (10/4096) * 0.5;
+        rightVelocity = rightMaster.getSelectedSensorVelocity() * (10/4096) * 0.5;
     }
 
     public void resetEncoders() {
-        leftMasterEncoderValueRaw = 0;
-        rightMasterEncoderValueRaw = 0;
+        leftMasterEncoderValue = 0;
+        rightMasterEncoderValue = 0;
         leftMaster.setSelectedSensorPosition(0);
         rightMaster.setSelectedSensorPosition(0);
         leftVelocity = 0;
@@ -157,8 +159,8 @@ public class Drivetrain implements PeriodicSubsystem {
     }
 
     public void updateDistanceTraveled() {
-        double distanceL = leftMasterEncoderValueRaw * 6 * Math.PI;
-        double distanceR = rightMasterEncoderValueRaw * 6 * Math.PI;
+        double distanceL = leftMasterEncoderValue * 6 * Math.PI;
+        double distanceR = rightMasterEncoderValue * 6 * Math.PI;
         p_IO.distanceTraveled = (distanceL + distanceR)/2;
     }
 
