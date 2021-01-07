@@ -65,7 +65,7 @@ public class Elevator implements PeriodicSubsystem {
         // so it only does it once instead of running the same method without doing anything every update?
         if (encoderValue >= 16000 && !driveSlowed) {
             slowDrive.accept(setDriveSlow);
-            driveSlowed = false;
+            driveSlowed = true;
         }
         encoderVelocity = talon.getSelectedSensorVelocity() * (10/4096) * 0.5;
     }
