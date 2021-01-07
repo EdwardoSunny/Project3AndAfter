@@ -12,7 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import team3647.frc2020.robot.Constants;
 import team3647.lib.drivers.TalonSRXFactory;
-import team3647.lib.drivers.VictorSPXFactory;
+import team3647.lib.drivers.VictorSPXFactory; 
 
 public class Elevator implements PeriodicSubsystem {
     private final TalonSRX talon;
