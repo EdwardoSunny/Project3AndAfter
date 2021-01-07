@@ -1,21 +1,15 @@
 package team3647.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.revrobotics.CANEncoder;
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.CANifier.GeneralPin;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-
-import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpiutil.math.MathUtil;
-import team3647.frc2020.robot.Constants;
+
 import team3647.lib.GroupPrinter;
 import team3647.lib.drivers.TalonSRXFactory;
 import team3647.lib.drivers.VictorSPXFactory;
-import team3647.lib.drivers.TalonSRXFactory.Configuration;
 
 
 public class Drivetrain implements PeriodicSubsystem {

@@ -1,6 +1,5 @@
 package team3647.frc2020.subsystems;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -28,7 +27,7 @@ public class Elevator implements PeriodicSubsystem {
     private DigitalInput limitSwitch = new DigitalInput(Constants.elevatorBeamBreakPin);
 
     //setting slow drive
-    private Consumer slowDrive;
+    private Consumer<Boolean> slowDrive;
     private boolean setDriveSlow;
 
     public Elevator(TalonSRXFactory.Configuration talonConfig, VictorSPXFactory.Configuration SPX1Config, VictorSPXFactory.Configuration SPX2Config, Consumer<Boolean> slowDrive, boolean driveTrainSlowed) {
