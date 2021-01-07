@@ -63,8 +63,9 @@ public class Elevator implements PeriodicSubsystem {
     public void updateSRXEncoder() {
         encoderValue = talon.getSelectedSensorPosition() ; //In ticks
         // so it only does it once instead of running the same method without doing anything every update?
-        if (encoderValue >= 16000 && driveSlowed) {
+        if (encoderValue >= 16000 && !driveSlowed) {
             slowDrive.accept(setDriveSlow);
+            driveSlowed = false;
         }
         encoderVelocity = talon.getSelectedSensorVelocity() * (10/4096) * 0.5;
     }
