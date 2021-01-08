@@ -25,6 +25,7 @@ public final class Constants {
     public static final int ElevatorGearboxSPX1Pin = 10;
 	public static final int ElevatorGearboxSPX2Pin = 11; 
 
+    public static final int hoodPWMPortChannel = 2;
     public static final int canifierID = 0;
 
     public static final int stallCurrent = 35;
