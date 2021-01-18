@@ -23,7 +23,7 @@ public final class Constants {
 
     public static final int ElevatorGearboxSRXPin = 8;
     public static final int ElevatorGearboxSPX1Pin = 10;
-	public static final int ElevatorGearboxSPX2Pin = 11; 
+    public static final int ElevatorGearboxSPX2Pin = 11; 
 
     public static final int hoodPWMPortChannel = 2;
     public static final int canifierID = 0;
@@ -38,8 +38,10 @@ public final class Constants {
     public static final int kTimeoutMs = 10;
 
 
+    //drivetrain configs
+
     public static final TalonSRXFactory.Configuration leftMasterConfig =
-    new TalonSRXFactory.Configuration(rightMasterPin, true)
+    new TalonSRXFactory.Configuration(leftMasterPin, true)
                 .currentLimiting(true, maxCurrent, stallCurrent, driveContinuousCurrent)
                 .voltageCompensation(true, 12.0);
 
@@ -52,7 +54,10 @@ public final class Constants {
         new VictorSPXFactory.Configuration(leftSlavePin).configMaxOutput(maxCurrent).configMaxReverseOutput(stallCurrent);
 
     public static final VictorSPXFactory.Configuration rightSlaveConfig =
-    new VictorSPXFactory.Configuration(leftSlavePin).configMaxOutput(maxCurrent).setInverted(true).configMaxReverseOutput(stallCurrent);
+    new VictorSPXFactory.Configuration(rightSlavePin).configMaxOutput(maxCurrent).setInverted(true).configMaxReverseOutput(stallCurrent);
+
+
+    //Elevator configs
 
     public static final TalonSRXFactory.Configuration ElevatorMasterConfig =
         new TalonSRXFactory.Configuration(ElevatorGearboxSRXPin, true)
@@ -65,6 +70,27 @@ public final class Constants {
     public static final VictorSPXFactory.Configuration ElevatorSPX2Config = 
     new VictorSPXFactory.Configuration(ElevatorGearboxSPX2Pin).configMaxOutput(maxCurrent).setInverted(false)
                     .configMaxReverseOutput(stallCurrent);
+    
 
+
+    //indexer constants
+
+    public static final int frontRollerPin = 24;
+    public static final int LorganizingRollerPin = 22;
+    public static final int RorganizingRollerPin = 21;
+    public static final int tunnelRollerPin = 23;
+    public static final int ballDetectionPin = 1;
+    public static final boolean rightRollerInvert = true;
+
+
+    public static final VictorSPXFactory.Configuration frontRollerConfig = 
+        new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
+
+    public static final VictorSPXFactory.Configuration LorganizingRollerConfig = 
+        new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
+    public static final VictorSPXFactory.Configuration RorganizingRollerConfig = 
+        new VictorSPXFactory.Configuration(frontRollerPin).setInverted(rightRollerInvert);
+        
 
 }
+
