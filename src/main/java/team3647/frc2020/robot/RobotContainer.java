@@ -22,6 +22,8 @@ public class RobotContainer {
   private final CommandScheduler m_commandScheduler = CommandScheduler.getInstance();
   public final Hood hood = new Hood(Constants.hoodPWMPortChannel);
 
+  public final Indexer m_Indexer = new Indexer()
+
   public final Command autonomousCommand = new GoStraightDistance(dt, 120);
 
   public RobotContainer() {
@@ -29,6 +31,8 @@ public class RobotContainer {
     m_commandScheduler.registerSubsystem(dt);
     m_commandScheduler.setDefaultCommand(dt,
         new ArcadeDrive(dt, controller::getLeftStickY, controller::getRightStickX));
+    
+
 
   }
 
@@ -60,6 +64,8 @@ public class RobotContainer {
     controller.dPadUp.whenActive(new InstantCommand(() -> hood.setPosition(0.3)));
     controller.dPadLeft.whenActive(new InstantCommand(() -> hood.setPosition(0.6)));
     controller.dPadRight.whenActive(new InstantCommand(() -> hood.setPosition(1)));
+
+    
 
 
   }
