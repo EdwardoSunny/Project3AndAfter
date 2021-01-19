@@ -20,13 +20,13 @@ public class Indexer implements PeriodicSubsystem {
 
     private boolean ballDetectionStatus;
 
-    public Indexer(VictorSPXFactory.Configuration victorConfigs, VictorSPXFactory.Configuration leftOrganizerConfig, VictorSPXFactory.Configuration rightOrganizerConfig, int ballDetectorPin) {
+    public Indexer(VictorSPXFactory.Configuration frontRollerConfig, VictorSPXFactory.Configuration tunnelRollerConfig, VictorSPXFactory.Configuration leftOrganizerConfig, VictorSPXFactory.Configuration rightOrganizerConfig, int ballDetectorPin) {
         //since all motors spinning same direction, I can use same config?
-        frontRoller = VictorSPXFactory.createVictor(victorConfigs);
-        organizingRollerR = VictorSPXFactory.createVictor(victorConfigs);
+        frontRoller = VictorSPXFactory.createVictor(frontRollerConfig);
+        organizingRollerR = VictorSPXFactory.createVictor(rightOrganizerConfig);
         //left hand is inverted
-        organizingRollerL = VictorSPXFactory.createVictor(victorConfigs);
-        tunnelRoller = VictorSPXFactory.createVictor(victorConfigs);
+        organizingRollerL = VictorSPXFactory.createVictor(leftOrganizerConfig);
+        tunnelRoller = VictorSPXFactory.createVictor(tunnelRollerConfig);
         ballDetection = new DigitalInput(ballDetectorPin);
     }
 

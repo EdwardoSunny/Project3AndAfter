@@ -11,6 +11,7 @@ import team3647.frc2020.inputs.Joysticks;
 import team3647.frc2020.subsystems.Drivetrain;
 import team3647.frc2020.subsystems.Elevator;
 import team3647.frc2020.subsystems.Hood;
+import team3647.frc2020.subsystems.Indexer;
 
 
 public class RobotContainer {
@@ -22,7 +23,7 @@ public class RobotContainer {
   private final CommandScheduler m_commandScheduler = CommandScheduler.getInstance();
   public final Hood hood = new Hood(Constants.hoodPWMPortChannel);
 
-  public final Indexer m_Indexer = new Indexer()
+  public final Indexer m_Indexer = new Indexer(Constants.frontRollerConfig, Constants.tunnelRollerConfig, Constants.LorganizingRollerConfig, Constants.RorganizingRollerConfig, Constants.ballDetectionPin);
 
   public final Command autonomousCommand = new GoStraightDistance(dt, 120);
 

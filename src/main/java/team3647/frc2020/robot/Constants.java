@@ -85,6 +85,8 @@ public final class Constants {
 
     public static final VictorSPXFactory.Configuration frontRollerConfig = 
         new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
+    public static final VictorSPXFactory.Configuration tunnelRollerConfig = 
+        new VictorSPXFactory.Configuration(tunnelRollerPin).
 
     public static final VictorSPXFactory.Configuration LorganizingRollerConfig = 
         new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
