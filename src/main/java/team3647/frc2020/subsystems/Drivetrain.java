@@ -138,7 +138,7 @@ public class Drivetrain implements PeriodicSubsystem {
         leftMasterEncoderValue = (leftMaster.getSelectedSensorPosition()/4096);
         rightMasterEncoderValue = (rightMaster.getSelectedSensorPosition()/4096);
 
-        //convert from ticks/100ms to rev/sex to ft/s
+        //convert from ticks/100ms to rev/sec to ft/s
         leftVelocity = leftMaster.getSelectedSensorVelocity() * (10/4096) * 0.5;
         rightVelocity = rightMaster.getSelectedSensorVelocity() * (10/4096) * 0.5;
     }
