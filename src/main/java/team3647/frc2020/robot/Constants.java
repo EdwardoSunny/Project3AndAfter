@@ -56,23 +56,6 @@ public final class Constants {
     public static final VictorSPXFactory.Configuration rightSlaveConfig =
     new VictorSPXFactory.Configuration(rightSlavePin).configMaxOutput(maxCurrent).setInverted(true).configMaxReverseOutput(stallCurrent);
 
-
-    //Elevator configs
-
-    public static final TalonSRXFactory.Configuration ElevatorMasterConfig =
-        new TalonSRXFactory.Configuration(ElevatorGearboxSRXPin, true)
-                .currentLimiting(true, maxCurrent, stallCurrent, driveContinuousCurrent)
-                .voltageCompensation(true, 12.0);
-    
-    public static final VictorSPXFactory.Configuration ElevatorSPX1Config = 
-    new VictorSPXFactory.Configuration(ElevatorGearboxSPX1Pin).configMaxOutput(maxCurrent).setInverted(false).configMaxReverseOutput(stallCurrent);
-
-    public static final VictorSPXFactory.Configuration ElevatorSPX2Config = 
-    new VictorSPXFactory.Configuration(ElevatorGearboxSPX2Pin).configMaxOutput(maxCurrent).setInverted(false)
-                    .configMaxReverseOutput(stallCurrent);
-    
-
-
     //indexer constants
 
     public static final int frontRollerPin = 24;
@@ -86,7 +69,7 @@ public final class Constants {
     public static final VictorSPXFactory.Configuration frontRollerConfig = 
         new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
     public static final VictorSPXFactory.Configuration tunnelRollerConfig = 
-        new VictorSPXFactory.Configuration(tunnelRollerPin).
+        new VictorSPXFactory.Configuration(tunnelRollerPin).configOpenRampRate(0.3);
 
     public static final VictorSPXFactory.Configuration LorganizingRollerConfig = 
         new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
