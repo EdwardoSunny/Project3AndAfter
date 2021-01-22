@@ -16,7 +16,7 @@ public class RobotContainer {
   private final Joysticks controller = new Joysticks(0);
   private final CANifier canifier = new CANifier(Constants.canifierID);
 
-  public final Drivetrain dt = new Drivetrain(Constants.leftMasterConfig, Constants.rightMasterConfig, Constants.leftSlaveConfig, Constants.rightSlaveConfig, canifier);
+  public final Drivetrain dt = new Drivetrain(Constants.leftMasterConfig, Constants.rightMasterConfig, Constants.leftSlaveConfig, Constants.rightSlaveConfig);
   private final CommandScheduler m_commandScheduler = CommandScheduler.getInstance();
   public final Hood hood = new Hood(Constants.hoodPWMPortChannel);
 
@@ -42,10 +42,6 @@ public class RobotContainer {
     return dt.getSlow();
   }
 
-  public boolean getCargoCondition() {
-    return dt.cargoDetection();
-  }
-
   private void configButtonBindings(){
     controller.buttonX.whenActive(new InstantCommand(() -> dt.setSlow(!dt.getSlow()), dt));
 
@@ -54,10 +50,6 @@ public class RobotContainer {
     controller.dPadUp.whenActive(new InstantCommand(() -> hood.setPosition(0.3)));
     controller.dPadLeft.whenActive(new InstantCommand(() -> hood.setPosition(0.6)));
     controller.dPadRight.whenActive(new InstantCommand(() -> hood.setPosition(1)));
-
-    
-
-
   }
 
   public void init(){

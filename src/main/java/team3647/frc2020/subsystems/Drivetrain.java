@@ -5,225 +5,209 @@ import com.ctre.phoenix.CANifier.GeneralPin;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpiutil.math.MathUtil;
 
 import team3647.lib.GroupPrinter;
+import team3647.lib.drivers.SparkMaxFactory;
 import team3647.lib.drivers.TalonSRXFactory;
 import team3647.lib.drivers.VictorSPXFactory;
 
 
 public class Drivetrain implements PeriodicSubsystem {
-    private TalonSRX leftMaster;
-    private TalonSRX rightMaster;
-    private VictorSPX leftSlave1;
-    private VictorSPX leftSlave2;
-    private VictorSPX rightSlave1;
-    private VictorSPX rightSlave2; 
+  private final CANSparkMax leftMaster;
+  private final CANSparkMax rightMaster;
+  private final CANSparkMax leftSlave;
+  private final CANSparkMax rightSlave;
 
-    private CANifier canifier;
+  private CANifier canifier;
 
-    private double leftMasterEncoderValue;
-    private double rightMasterEncoderValue;
-    private double leftVelocity;
-    private double rightVelocity;
+  private double leftMasterEncoderValue;
+  private double rightMasterEncoderValue;
+  private double leftVelocity;
+  private double rightVelocity;
 
-    private double throttleMulti;
-    private boolean isSlowed;
-    private GroupPrinter m_printer;
+  private CANEncoder leftMasterEncoder;
+  private CANEncoder rightMasterEncoder;
+
+  private double throttleMulti;
+  private boolean isSlowed;
 
 
-    public periodicIO p_IO = new periodicIO();
-    public static final double kDefaultDeadband = 0.02;
-    public static final double kDefaultMaxOutput = 1.0;
+  public periodicIO p_IO = new periodicIO();
+  public static final double kDefaultDeadband = 0.02;
+  public static final double kDefaultMaxOutput = 1.0;
 
-    protected double m_deadband = kDefaultDeadband;
-    protected double m_maxOutput = kDefaultMaxOutput;
-    private boolean squareInputs = false;
+  protected double m_deadband = kDefaultDeadband;
+  protected double m_maxOutput = kDefaultMaxOutput;
+  private boolean squareInputs = false;
 
     //because config is already inverted
-    private double m_rightSideInvertMultiplier = 1.0;
-
-    
+  private double m_rightSideInvertMultiplier = 1.0;
 
 
+  public Drivetrain(SparkMaxFactory.Configuration leftMasterConfig, SparkMaxFactory.Configuration rightMasterConfig, SparkMaxFactory.Configuration leftSlaveConfig, SparkMaxFactory.Configuration rightSlaveConfig) {
+      
+    leftMaster = SparkMaxFactory.createSparkMax(leftMasterConfig);
+    rightMaster = SparkMaxFactory.createSparkMax(rightMasterConfig);
+    leftSlave = SparkMaxFactory.createSparkMax(leftSlaveConfig);
+    rightSlave = SparkMaxFactory.createSparkMax(rightSlaveConfig);
 
-    public Drivetrain(TalonSRXFactory.Configuration leftMasterConfig, TalonSRXFactory.Configuration rightMasterConfig, VictorSPXFactory.Configuration leftSlaveConfig,
-            VictorSPXFactory.Configuration rightSlaveConfig, CANifier canifier) {
-        
-        leftMaster = TalonSRXFactory.createTalon(leftMasterConfig);
-        rightMaster = TalonSRXFactory.createTalon(rightMasterConfig);
+    leftMasterEncoder = leftMaster.getEncoder();
+    rightMasterEncoder = rightMaster.getEncoder();
 
-        leftSlave1 = VictorSPXFactory.createVictor(leftSlaveConfig);
-        leftSlave2 = VictorSPXFactory.createVictor(leftSlaveConfig);
-        
-        rightSlave1 = VictorSPXFactory.createVictor(rightSlaveConfig);
-        rightSlave2 = VictorSPXFactory.createVictor(rightSlaveConfig);
-        m_printer = GroupPrinter.getInstance();
+    leftSlave.follow(leftMaster);
+    rightSlave.follow(rightMaster);
+    throttleMulti = 0.6;
+  
+  }  
 
-        leftSlave1.follow(leftMaster);
-        leftSlave2.follow(leftMaster);
+  public static class periodicIO {
+    public double distanceTraveled;
+  }
 
-        rightSlave1.follow(rightMaster);
-        rightSlave2.follow(rightMaster);
+  public void arcadeDrive(double xSpeed, double zRotation)  {
+    xSpeed *= throttleMulti;
+    zRotation *= 0.3;
+    xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
+    xSpeed = applyDeadband(xSpeed, m_deadband);
 
-        throttleMulti = 0.6;
-    
-    }  
+    zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
+    zRotation = applyDeadband(zRotation, m_deadband);
 
-    public static class periodicIO {
-        public double distanceTraveled;
-        public boolean hasNoCargo;
+    // Square the inputs (while preserving the sign) to increase fine control
+    // while permitting full power.
+    if (squareInputs) {
+      xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
+      zRotation = Math.copySign(zRotation * zRotation, zRotation);
     }
 
-    public void arcadeDrive(double xSpeed, double zRotation)  {
-        xSpeed *= throttleMulti;
-        zRotation *= 0.3;
-        xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
-        xSpeed = applyDeadband(xSpeed, m_deadband);
-    
-        zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
-        zRotation = applyDeadband(zRotation, m_deadband);
-    
-        // Square the inputs (while preserving the sign) to increase fine control
-        // while permitting full power.
-        if (squareInputs) {
-          xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
-          zRotation = Math.copySign(zRotation * zRotation, zRotation);
-        }
-    
-        double leftMotorOutput;
-        double rightMotorOutput;
-    
-        double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
-    
-        if (xSpeed >= 0.0) {
-          // First quadrant, else second quadrant
-          if (zRotation >= 0.0) {
-            leftMotorOutput = maxInput;
-            rightMotorOutput = xSpeed - zRotation;
-          } else {
-            leftMotorOutput = xSpeed + zRotation;
-            rightMotorOutput = maxInput;
-          }
-        } else {
-          // Third quadrant, else fourth quadrant
-          if (zRotation >= 0.0) {
-            leftMotorOutput = xSpeed + zRotation;
-            rightMotorOutput = maxInput;
-          } else {
-            leftMotorOutput = maxInput;
-            rightMotorOutput = xSpeed - zRotation;
-          }
-        }
-    
-        leftMaster.set(ControlMode.PercentOutput, MathUtil.clamp(leftMotorOutput, -1.0, 1.0));
-        
-        rightMaster.set(ControlMode.PercentOutput, MathUtil.clamp(rightMotorOutput, -1.0, 1.0));
-    }
+    double leftMotorOutput;
+    double rightMotorOutput;
 
-    private double applyDeadband(double value, double deadband) {
-        if (Math.abs(value) > deadband) {
-          if (value > 0.0) {
-            return (value - deadband) / (1.0 - deadband);
-          } else {
-            return (value + deadband) / (1.0 - deadband);
-          }
-        } else {
-          return 0.0;
-        }
+    double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
+
+    if (xSpeed >= 0.0) {
+      // First quadrant, else second quadrant
+      if (zRotation >= 0.0) {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = xSpeed - zRotation;
+      } else {
+        leftMotorOutput = xSpeed + zRotation;
+        rightMotorOutput = maxInput;
       }
-
-    public void updateEncoders() {
-        //convert to revolution
-        leftMasterEncoderValue = (leftMaster.getSelectedSensorPosition()/4096);
-        rightMasterEncoderValue = (rightMaster.getSelectedSensorPosition()/4096);
-
-        //convert from ticks/100ms to rev/sec to ft/s
-        leftVelocity = leftMaster.getSelectedSensorVelocity() * (10/4096) * 0.5;
-        rightVelocity = rightMaster.getSelectedSensorVelocity() * (10/4096) * 0.5;
+    } else {
+      // Third quadrant, else fourth quadrant
+      if (zRotation >= 0.0) {
+        leftMotorOutput = xSpeed + zRotation;
+        rightMotorOutput = maxInput;
+      } else {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = xSpeed - zRotation;
+      }
     }
 
-    public void resetEncoders() {
-        leftMasterEncoderValue = 0;
-        rightMasterEncoderValue = 0;
-        leftMaster.setSelectedSensorPosition(0);
-        rightMaster.setSelectedSensorPosition(0);
-        leftVelocity = 0;
-        rightVelocity = 0;
-    }
+    leftMaster.set(MathUtil.clamp(leftMotorOutput, -1.0, 1.0));
+    
+    rightMaster.set(MathUtil.clamp(rightMotorOutput, -1.0, 1.0));
+  }
 
-    public void updateDistanceTraveled() {
-        double distanceL = leftMasterEncoderValue * 6 * Math.PI;
-        double distanceR = rightMasterEncoderValue * 6 * Math.PI;
-        p_IO.distanceTraveled = (distanceL + distanceR)/2;
+  private double applyDeadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
     }
+  }
 
-    public void resetDistanceTraveled(){
-        p_IO.distanceTraveled = 0;
-    }
+  public void updateEncoders() {
+    //convert to revolution
+    leftMasterEncoderValue = (leftMasterEncoder.getPosition()/4096);
+    rightMasterEncoderValue = (rightMasterEncoder.getPosition()/4096);
 
-    public void updateCargoDetection() {
-      p_IO.hasNoCargo = cargoDetection();
-    }
+    //convert from ticks/100ms to rev/sec to ft/s
+    leftVelocity = leftMasterEncoder.getVelocity() * (10/4096) * 0.5;
+    rightVelocity = rightMasterEncoder.getVelocity() * (10/4096) * 0.5;
+  }
 
-    public void setSlow(boolean slowed) {
-        if (slowed && p_IO.hasNoCargo) {
-            isSlowed = true;
-            throttleMulti = 0.2;
-        } else {
-            isSlowed = false;
-            throttleMulti = 0.6;
-        }
-    }
+  public void resetEncoders() {
+    leftMasterEncoderValue = 0;
+    rightMasterEncoderValue = 0;
+    leftMasterEncoder.setPosition(0);
+    rightMasterEncoder.setPosition(0);
+    leftVelocity = 0;
+    rightVelocity = 0;
+  } 
 
-    public boolean getSlow() {
-        return isSlowed;
-    }
+  public void updateDistanceTraveled() {
+    double distanceL = leftMasterEncoderValue * 6 * Math.PI;
+    double distanceR = rightMasterEncoderValue * 6 * Math.PI;
+    p_IO.distanceTraveled = (distanceL + distanceR)/2;
+  }
 
-    public double getDistanceTraveled() {
-        return p_IO.distanceTraveled;
-    }
+  public void resetDistanceTraveled(){
+    p_IO.distanceTraveled = 0;
+  }
 
-    public double getdtVelocity() {
-        return (leftVelocity + rightVelocity)/2;
+  public void setSlow(boolean slowed) {
+    if (slowed) {
+      isSlowed = true;
+      throttleMulti = 0.2;
+    } else {
+      isSlowed = false;
+      throttleMulti = 0.6;
     }
+  }
 
-    public boolean cargoDetection() {
-      //returns true if no cargo, false if cargo
-        return !canifier.getGeneralInput(GeneralPin.LIMR);
-    }
+  public boolean getSlow() {
+    return isSlowed;
+  }
 
-    public void init() {
-        resetEncoders();
-        resetDistanceTraveled();
-    }
+  public double getDistanceTraveled() {
+    return p_IO.distanceTraveled;
+  }
 
-    public void end() {
-        //stops everything
-        leftMaster.set(ControlMode.PercentOutput, 0);
-        rightMaster.set(ControlMode.PercentOutput, 0);
-    }
+  public double getdtVelocity() {
+    return (leftVelocity + rightVelocity)/2;
+  }
 
-    public void readPeriodicInputs() {
-        updateEncoders();
-        updateDistanceTraveled();
-        updateCargoDetection();
-    }
 
-    public void writePeriodicOutputs() {
-    }
+  public void init() {
+    resetEncoders();
+    resetDistanceTraveled();
+  }
 
-    @Override
-    public void periodic() {
-        //when its regeistered in the commandScheuler --> every command interation, this is called before the command
-        PeriodicSubsystem.super.periodic();
-        
-    }
+  public void end() {
+    //stops everything
+    leftMaster.set(0);
+    rightMaster.set(0);
+  }
 
-    @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        return "DriveTrain";
-    }
+  public void readPeriodicInputs() {
+    updateEncoders();
+    updateDistanceTraveled();
+  }
+
+  public void writePeriodicOutputs() {
+  }
+
+  @Override
+  public void periodic() {
+    //when its regeistered in the commandScheuler --> every command interation, this is called before the command
+    PeriodicSubsystem.super.periodic();
+      
+  }
+
+  @Override
+  public String getName() {
+    // TODO Auto-generated method stub
+    return "DriveTrain";
+  }
 
 }
