@@ -1,19 +1,11 @@
 package team3647.frc2020.subsystems;
 
-import com.ctre.phoenix.CANifier;
-import com.ctre.phoenix.CANifier.GeneralPin;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpiutil.math.MathUtil;
-
-import team3647.lib.GroupPrinter;
 import team3647.lib.drivers.SparkMaxFactory;
-import team3647.lib.drivers.TalonSRXFactory;
-import team3647.lib.drivers.VictorSPXFactory;
+
 
 
 public class Drivetrain implements PeriodicSubsystem {
@@ -21,8 +13,6 @@ public class Drivetrain implements PeriodicSubsystem {
   private final CANSparkMax rightMaster;
   private final CANSparkMax leftSlave;
   private final CANSparkMax rightSlave;
-
-  private CANifier canifier;
 
   private double leftMasterEncoderValue;
   private double rightMasterEncoderValue;

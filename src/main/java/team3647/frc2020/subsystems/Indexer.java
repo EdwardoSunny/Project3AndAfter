@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import team3647.lib.IndexerSignal;
+
 import team3647.lib.drivers.VictorSPXFactory;
 //rolls in balls into the tunnel for shooting stuff and stuff
 //I will figure this alternate indexer out later for fun ig
