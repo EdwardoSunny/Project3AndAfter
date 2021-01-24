@@ -3,13 +3,13 @@ package team3647.frc2020.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import team3647.frc2020.subsystems.Indexer;
+import team3647.frc2020.subsystems.HotDogIndexer;
 
 public class IndexerManualMode extends CommandBase {
-    private final Indexer indexer;
+    private final HotDogIndexer indexer;
     private final double demand;
 
-    public IndexerManualMode(Indexer indexer, DoubleSupplier demand) {
+    public IndexerManualMode(HotDogIndexer indexer, DoubleSupplier demand) {
         this.indexer = indexer;
         this.demand = demand.getAsDouble();
     }
@@ -21,12 +21,11 @@ public class IndexerManualMode extends CommandBase {
 
     @Override
     public void execute() {
-        indexer.manuallySet(demand);
+        indexer.setManual(demand);
     }
 
     @Override 
     public void end(boolean interrupted) {
-        
     }  
 
     @Override 

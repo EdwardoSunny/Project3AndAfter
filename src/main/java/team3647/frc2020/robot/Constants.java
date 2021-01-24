@@ -69,8 +69,41 @@ public final class Constants {
     public static final int ballDetectionPin = 1;
     public static final boolean rightRollerInvert = true;
 
+    //Hot dog indexer configs
+    public static final int leftVerticalRollersPin = 22;
+    public static final int rightVerticalRollersPin = 21;
+    public static final int tunnelPin = 23;
+    public static final int horizontalRollersPin = 24;
+    public static final int bannerSensorPin = 1;
 
-    public static final VictorSPXFactory.Configuration frontRollerConfig = 
+    public static final int PP_VerticalPDPSlot = 10;
+    public static final int tunnelPDPSlot = 8;
+
+    public static boolean rightVerticalRollersInverted = false;
+    public static boolean leftVerticalRollersInverted = true;
+    public static boolean tunnelInverted = false;
+    public static boolean horizontalRollersInverted = false;
+    public static VictorSPXFactory.Configuration leftRollersConfig =
+                new VictorSPXFactory.Configuration(leftVerticalRollersPin)
+                        .setInverted(leftVerticalRollersInverted).configOpenLoopRampRate(.3)
+                        .setPDPSlot(10);
+    public static TalonSRXFactory.Configuration rightRollersConfig =
+            new TalonSRXFactory.Configuration(rightVerticalRollersPin,
+                    rightVerticalRollersInverted);
+    public static VictorSPXFactory.Configuration tunnelConfig =
+            new VictorSPXFactory.Configuration(tunnelPin).setInverted(tunnelInverted)
+                    .setPDPSlot(8);
+    public static VictorSPXFactory.Configuration horizontalRollersConfig =
+            new VictorSPXFactory.Configuration(horizontalRollersPin)
+                    .setInverted(horizontalRollersInverted).configOpenLoopRampRate(.3);
+
+
+
+
+
+
+    //Indexer configs
+    /*public static final VictorSPXFactory.Configuration frontRollerConfig = 
         new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
     public static final VictorSPXFactory.Configuration tunnelRollerConfig = 
         new VictorSPXFactory.Configuration(tunnelRollerPin).configOpenRampRate(0.3);
@@ -78,7 +111,7 @@ public final class Constants {
     public static final VictorSPXFactory.Configuration LorganizingRollerConfig = 
         new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
     public static final VictorSPXFactory.Configuration RorganizingRollerConfig = 
-        new VictorSPXFactory.Configuration(frontRollerPin).setInverted(rightRollerInvert);
+        new VictorSPXFactory.Configuration(frontRollerPin).setInverted(rightRollerInvert);*/
         
 
 }

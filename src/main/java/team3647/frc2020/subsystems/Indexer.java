@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import team3647.lib.IndexerSignal;
 import team3647.lib.drivers.VictorSPXFactory;
 //rolls in balls into the tunnel for shooting stuff and stuff
+//I will figure this alternate indexer out later for fun ig
 public class Indexer implements PeriodicSubsystem {
     private final VictorSPX frontRoller;
     private final VictorSPX organizingRollerR;
@@ -75,6 +76,8 @@ public class Indexer implements PeriodicSubsystem {
         // TODO Auto-generated method stub
         PeriodicSubsystem.super.writePeriodicOutputs();
     }
+
+    
 
     @Override
     public String getName() {
