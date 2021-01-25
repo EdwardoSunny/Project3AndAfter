@@ -19,6 +19,9 @@ import team3647.lib.drivers.VictorSPXFactory;
 
 public final class Constants {
 
+    //PID
+    public static final double kP = 0.5;
+
     public static final int leftMasterPin = 1;
     public static final int leftSlavePin = 2;
     public static final int rightMasterPin = 3;

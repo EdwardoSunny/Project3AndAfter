@@ -22,7 +22,7 @@ public class GoStraightDistance extends CommandBase {
 
     @Override
     public void execute() {
-        m_dt.arcadeDrive(0, 0.6);
+        m_dt.arcadeDrive(0.6, 0);
     }
 
     @Override 
