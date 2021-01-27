@@ -4,14 +4,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import team3647.frc2020.commands.ArcadeDrive;
-import team3647.frc2020.commands.GoStraightDistance;
 import team3647.frc2020.commands.GoStraightDistancePID;
 import team3647.frc2020.commands.IndexerManualMode;
+import team3647.frc2020.commands.OrganizeFeeder;
 import team3647.frc2020.inputs.Joysticks;
 import team3647.frc2020.subsystems.Drivetrain;
 import team3647.frc2020.subsystems.Hood;
 import team3647.frc2020.subsystems.HotDogIndexer;
-import team3647.lib.IndexerSignal;
+
 
 
 public class RobotContainer {
@@ -54,7 +54,7 @@ public class RobotContainer {
     controller.dPadRight.whenActive(new InstantCommand(() -> hood.setPosition(1)));
 
     //automatic organize feeder
-    
+    controller.buttonA.whenHeld(new OrganizeFeeder(m_Indexer));
   }
 
   public void init(){
