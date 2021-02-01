@@ -4,7 +4,9 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpiutil.math.MathUtil;
+import team3647.frc2020.robot.Constants;
 import team3647.lib.drivers.SparkMaxFactory;
+import team3647.lib.drivers.ClosedLoopFactory.ClosedLoopConfig;
 
 
 
@@ -13,6 +15,7 @@ public class Drivetrain implements PeriodicSubsystem {
   private final CANSparkMax rightMaster;
   private final CANSparkMax leftSlave;
   private final CANSparkMax rightSlave;
+  private int wheelDiameter = Constants.driveWheelDiameter;
 
   private double leftMasterEncoderValue;
   private double rightMasterEncoderValue;
@@ -25,6 +28,11 @@ public class Drivetrain implements PeriodicSubsystem {
   private double throttleMulti;
   private boolean isSlowed;
 
+  private final ClosedLoopConfig leftPIDConfig;
+  private final ClosedLoopConfig rightPIDConfig;
+
+  public final double kEncoderRPMToFeetPerSecond;
+  public final double kEncoderRevolutionToFeet;
 
   public periodicIO p_IO = new periodicIO();
   public static final double kDefaultDeadband = 0.02;
@@ -38,7 +46,11 @@ public class Drivetrain implements PeriodicSubsystem {
   private double m_rightSideInvertMultiplier = 1.0;
 
 
-  public Drivetrain(SparkMaxFactory.Configuration leftMasterConfig, SparkMaxFactory.Configuration rightMasterConfig, SparkMaxFactory.Configuration leftSlaveConfig, SparkMaxFactory.Configuration rightSlaveConfig) {
+  public Drivetrain(SparkMaxFactory.Configuration leftMasterConfig, SparkMaxFactory.Configuration rightMasterConfig, SparkMaxFactory.Configuration leftSlaveConfig, SparkMaxFactory.Configuration rightSlaveConfig, ClosedLoopConfig leftPID, ClosedLoopConfig rightPID) {
+    this.leftPIDConfig = leftPID;
+    this.rightPIDConfig = rightPID;
+    this.kEncoderRPMToFeetPerSecond = wheelDiameter/12;
+    this.kEncoderRevolutionToFeet = wheelDiameter * Math.PI;
       
     leftMaster = SparkMaxFactory.createSparkMax(leftMasterConfig);
     rightMaster = SparkMaxFactory.createSparkMax(rightMasterConfig);
@@ -51,7 +63,6 @@ public class Drivetrain implements PeriodicSubsystem {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
     throttleMulti = 0.6;
-  
   }  
 
   public static class periodicIO {
@@ -118,12 +129,14 @@ public class Drivetrain implements PeriodicSubsystem {
 
   public void updateEncoders() {
     //convert to revolution
-    leftMasterEncoderValue = (leftMasterEncoder.getPosition()/4096);
-    rightMasterEncoderValue = (rightMasterEncoder.getPosition()/4096);
+    //divide 4096
+    leftMasterEncoderValue = (leftMasterEncoder.getPosition() * leftPIDConfig.kEncoderTicksToUnits);
+    rightMasterEncoderValue = (rightMasterEncoder.getPosition() * rightPIDConfig.kEncoderTicksToUnits);
 
     //convert from ticks/100ms to rev/sec to ft/s
-    leftVelocity = leftMasterEncoder.getVelocity() * (10/4096) * 0.5;
-    rightVelocity = rightMasterEncoder.getVelocity() * (10/4096) * 0.5;
+    //(10/4096) * 0.5
+    leftVelocity = leftMasterEncoder.getVelocity() * leftPIDConfig.kEncoderVelocityToRPM * kEncoderRPMToFeetPerSecond;;
+    rightVelocity = rightMasterEncoder.getVelocity() * rightPIDConfig.kEncoderVelocityToRPM * kEncoderRPMToFeetPerSecond;
   }
 
   public void resetEncoders() {
@@ -136,8 +149,8 @@ public class Drivetrain implements PeriodicSubsystem {
   } 
 
   public void updateDistanceTraveled() {
-    double distanceL = leftMasterEncoderValue * 6 * Math.PI;
-    double distanceR = rightMasterEncoderValue * 6 * Math.PI;
+    double distanceL = leftMasterEncoderValue * kEncoderRevolutionToFeet;
+    double distanceR = rightMasterEncoderValue * kEncoderRevolutionToFeet;
     p_IO.distanceTraveled = (distanceL + distanceR)/2;
   }
 

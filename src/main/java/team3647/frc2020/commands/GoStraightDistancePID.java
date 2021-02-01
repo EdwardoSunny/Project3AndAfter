@@ -28,7 +28,7 @@ public class GoStraightDistancePID extends CommandBase {
         double error = setpoint - dt.getDistanceTraveled();
         double outputSpeed = kP * error; 
         dt.arcadeDrive(outputSpeed, 0);
-        if (error == 0) {
+        if (Math.abs(error) < 0.2) {
             atSetpoint = true;
         }
     }

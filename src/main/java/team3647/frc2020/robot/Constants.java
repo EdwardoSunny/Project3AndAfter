@@ -1,11 +1,9 @@
 package team3647.frc2020.robot;
-/*----------------------------------------------------------------------------*/
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+/*----------------------------------------------------------------------------*/
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import team3647.lib.drivers.ClosedLoopFactory;
 import team3647.lib.drivers.SparkMaxFactory;
 
 /* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
@@ -16,11 +14,14 @@ import team3647.lib.drivers.SparkMaxFactory;
 
 import team3647.lib.drivers.TalonSRXFactory;
 import team3647.lib.drivers.VictorSPXFactory;
+import team3647.lib.drivers.ClosedLoopFactory.ClosedLoopConfig;
 
 public final class Constants {
 
     //PID
     public static final double kP = 0.5;
+    public static final double kI = 0;
+    public static final double kD = 0;
 
     public static final int leftMasterPin = 1;
     public static final int leftSlavePin = 2;
@@ -45,8 +46,18 @@ public final class Constants {
 
 
     //drivetrain configs
+    public static final int driveWheelDiameter = 4;
 
-    
+
+    public static final double kMaxSpeedMetersPerSecond = 2;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+
+    public static final double maxVoltage = 11.0;
+    public static final double gearboxReduction = 9.0 / 42.0 * 24.0 / 50.0;
+
+    public static final double neoRotationsToMeters =
+            gearboxReduction * driveWheelDiameter * Math.PI;
+
     public static final SparkMaxFactory.Configuration leftMasterConfig =
         new SparkMaxFactory.Configuration(leftMasterPin, false)
             .currentLimiting(true, maxCurrent, stallCurrent).idleMode(IdleMode.kBrake)
@@ -63,6 +74,13 @@ public final class Constants {
     public static final SparkMaxFactory.Configuration rightSlaveConfig =
         SparkMaxFactory.Configuration.mirrorWithCANID(rightMasterConfig, rightSlavePin);
 
+    
+    public static final ClosedLoopConfig leftMasterPIDConfig = new ClosedLoopConfig()
+        .encoderVelocityToRPM(gearboxReduction).encoderTicksToUnits(neoRotationsToMeters)
+        .maxVelocity(kMaxSpeedMetersPerSecond).configPID(kP, kI, kD);
+    public static final ClosedLoopConfig rightMasterPIDConfig = new ClosedLoopConfig()
+        .encoderVelocityToRPM(gearboxReduction).encoderTicksToUnits(neoRotationsToMeters)
+        .maxVelocity(kMaxSpeedMetersPerSecond).configPID(kP, kI, kD);
     //indexer constants
 
     public static final int frontRollerPin = 24;
