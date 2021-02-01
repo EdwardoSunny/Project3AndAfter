@@ -49,13 +49,13 @@ public final class Constants {
     public static final int driveWheelDiameter = 4;
 
 
-    public static final double kMaxSpeedMetersPerSecond = 2;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+    public static final double kMaxSpeedFeetPerSecond = 2;
+    public static final double kMaxAccelerationFeetPerSecondSquared = 2;
 
     public static final double maxVoltage = 11.0;
     public static final double gearboxReduction = 9.0 / 42.0 * 24.0 / 50.0;
 
-    public static final double neoRotationsToMeters =
+    public static final double neoRotationsToFeet =
             gearboxReduction * driveWheelDiameter * Math.PI;
 
     public static final SparkMaxFactory.Configuration leftMasterConfig =
@@ -76,11 +76,11 @@ public final class Constants {
 
     
     public static final ClosedLoopConfig leftMasterPIDConfig = new ClosedLoopConfig()
-        .encoderVelocityToRPM(gearboxReduction).encoderTicksToUnits(neoRotationsToMeters)
-        .maxVelocity(kMaxSpeedMetersPerSecond).configPID(kP, kI, kD);
+        .encoderVelocityToRPM(gearboxReduction).encoderTicksToUnits(neoRotationsToFeet)
+        .maxVelocity(kMaxSpeedFeetPerSecond).configPID(kP, kI, kD);
     public static final ClosedLoopConfig rightMasterPIDConfig = new ClosedLoopConfig()
-        .encoderVelocityToRPM(gearboxReduction).encoderTicksToUnits(neoRotationsToMeters)
-        .maxVelocity(kMaxSpeedMetersPerSecond).configPID(kP, kI, kD);
+        .encoderVelocityToRPM(gearboxReduction).encoderTicksToUnits(neoRotationsToFeet)
+        .maxVelocity(kMaxSpeedFeetPerSecond).configPID(kP, kI, kD);
     //indexer constants
 
     public static final int frontRollerPin = 24;

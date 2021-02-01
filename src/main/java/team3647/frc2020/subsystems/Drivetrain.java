@@ -63,7 +63,7 @@ public class Drivetrain implements PeriodicSubsystem {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
     throttleMulti = 0.6;
-  }  
+  } 
 
   public static class periodicIO {
     public double distanceTraveled;
@@ -135,7 +135,7 @@ public class Drivetrain implements PeriodicSubsystem {
 
     //convert from ticks/100ms to rev/sec to ft/s
     //(10/4096) * 0.5
-    leftVelocity = leftMasterEncoder.getVelocity() * leftPIDConfig.kEncoderVelocityToRPM * kEncoderRPMToFeetPerSecond;;
+    leftVelocity = leftMasterEncoder.getVelocity() * leftPIDConfig.kEncoderVelocityToRPM * kEncoderRPMToFeetPerSecond;
     rightVelocity = rightMasterEncoder.getVelocity() * rightPIDConfig.kEncoderVelocityToRPM * kEncoderRPMToFeetPerSecond;
   }
 
