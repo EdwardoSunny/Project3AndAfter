@@ -33,9 +33,6 @@ public class RobotContainer {
     m_commandScheduler.setDefaultCommand(dt,
         new ArcadeDrive(dt, controller::getLeftStickY, controller::getRightStickX));
     m_commandScheduler.setDefaultCommand(m_Indexer, new IndexerManualMode(m_Indexer, controller::getRightStickY));
-    
-
-
   }
 
   public Command getAutonomousCommand() {
