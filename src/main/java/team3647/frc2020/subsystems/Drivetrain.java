@@ -15,10 +15,10 @@ public class Drivetrain implements PeriodicSubsystem {
   private final CANSparkMax rightMaster;
   private final CANSparkMax leftSlave;
   private final CANSparkMax rightSlave;
-  private int wheelDiameter = Constants.driveWheelDiameter;
+  private final double kWheelDiameter = Constants.driveWheelDiameter;
 
-  private double leftMasterEncoderValue;
-  private double rightMasterEncoderValue;
+  private double leftPosition;
+  private double rightPosition;
   private double leftVelocity;
   private double rightVelocity;
 
@@ -125,18 +125,18 @@ public class Drivetrain implements PeriodicSubsystem {
   public void updateEncoders() {
     //convert to revolution
     //divide 4096
-    leftMasterEncoderValue = (leftMasterEncoder.getPosition() * leftPIDConfig.kEncoderTicksToUnits);
-    rightMasterEncoderValue = (rightMasterEncoder.getPosition() * rightPIDConfig.kEncoderTicksToUnits);
+    leftPosition = (leftMasterEncoder.getPosition() * leftPIDConfig.kEncoderTicksToUnits);
+    rightPosition = (rightMasterEncoder.getPosition() * rightPIDConfig.kEncoderTicksToUnits);
 
     //convert from ticks/100ms to rev/sec to ft/s
     //(10/4096) * 0.5
-    leftVelocity = leftMasterEncoder.getVelocity() * leftPIDConfig.kEncoderVelocityToRPM;
-    rightVelocity = rightMasterEncoder.getVelocity() * rightPIDConfig.kEncoderVelocityToRPM;
+    leftVelocity = leftMasterEncoder.getVelocity() * leftPIDConfig.kEncoderVelocityToRPM * kWheelDiameter * (1/60);
+    rightVelocity = rightMasterEncoder.getVelocity() * rightPIDConfig.kEncoderVelocityToRPM * kWheelDiameter * (1/60);
   }
 
   public void resetEncoders() {
-    leftMasterEncoderValue = 0;
-    rightMasterEncoderValue = 0;
+    leftPosition = 0;
+    rightPosition = 0;
     leftMasterEncoder.setPosition(0);
     rightMasterEncoder.setPosition(0);
     leftVelocity = 0;
@@ -144,9 +144,7 @@ public class Drivetrain implements PeriodicSubsystem {
   } 
 
   public void updateDistanceTraveled() {
-    double distanceL = leftMasterEncoderValue;
-    double distanceR = rightMasterEncoderValue;
-    p_IO.distanceTraveled = (distanceL + distanceR)/2;
+    p_IO.distanceTraveled = (leftPosition + rightPosition)/2;
   }
 
   public void resetDistanceTraveled(){

@@ -1,5 +1,6 @@
 package team3647.frc2020.commands;
 
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3647.frc2020.subsystems.Drivetrain;
 
@@ -8,7 +9,7 @@ public class GoStraightDistancePID extends CommandBase {
     private boolean atSetpoint;
     private int setpoint;
     private double kP;
-
+    // In feet --> set point is in feet, but position is in meters
     public GoStraightDistancePID(Drivetrain dt, int setpoint, double kP) {
         this.setpoint = setpoint;
         this.dt = dt;
@@ -25,7 +26,7 @@ public class GoStraightDistancePID extends CommandBase {
 
     @Override
     public void execute() {
-        double error = setpoint - dt.getDistanceTraveled();
+        double error = Units.feetToMeters(setpoint) - dt.getDistanceTraveled();
         double outputSpeed = kP * error; 
         dt.arcadeDrive(outputSpeed, 0);
         if (Math.abs(error) < 0.2) {

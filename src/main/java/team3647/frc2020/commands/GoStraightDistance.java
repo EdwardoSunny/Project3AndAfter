@@ -1,5 +1,6 @@
 package team3647.frc2020.commands;
 
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3647.frc2020.subsystems.Drivetrain;
 
@@ -9,7 +10,7 @@ public class GoStraightDistance extends CommandBase {
 
     public GoStraightDistance(Drivetrain dt, double targetDistance) {
         this.m_dt = dt;
-        this.distance = targetDistance;
+        this.distance = Units.feetToMeters(targetDistance);
     }
 
     @Override

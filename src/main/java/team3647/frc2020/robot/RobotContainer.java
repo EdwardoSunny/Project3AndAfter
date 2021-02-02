@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import team3647.frc2020.commands.ArcadeDrive;
 import team3647.frc2020.commands.GoStraightDistancePID;
-import team3647.frc2020.commands.IndexerManualMode;
+import team3647.frc2020.commands.IndexerManualMode;  
 import team3647.frc2020.commands.TunnelIn;
 import team3647.frc2020.commands.TunnelOut;
 import team3647.frc2020.inputs.Joysticks;
@@ -25,8 +25,8 @@ public class RobotContainer {
 
   public final HotDogIndexer m_Indexer = new HotDogIndexer(Constants.rightRollersConfig, Constants.leftRollersConfig, Constants.horizontalRollersConfig, Constants.tunnelConfig, Constants.ballDetectionPin);
 
-  //public final Command autonomousCommand = new GoStraightDistance(dt, 120);
-  public final Command autonomousCommand = new GoStraightDistancePID(dt, 10, Constants.kP);
+  //public final Command autonomousCommand = new GoStraightDistance(dt, 10);
+  public final Command autonomousCommand = new GoStraightDistancePID(dt, 10, Constants.kP); 
   public RobotContainer() {
     configButtonBindings();
     m_commandScheduler.registerSubsystem(dt, m_Indexer);
