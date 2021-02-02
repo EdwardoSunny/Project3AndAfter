@@ -31,9 +31,6 @@ public class Drivetrain implements PeriodicSubsystem {
   private final ClosedLoopConfig leftPIDConfig;
   private final ClosedLoopConfig rightPIDConfig;
 
-  public final double kEncoderRPMToFeetPerSecond;
-  public final double kEncoderRevolutionToFeet;
-
   public periodicIO p_IO = new periodicIO();
   public static final double kDefaultDeadband = 0.02;
   public static final double kDefaultMaxOutput = 1.0;
@@ -49,8 +46,6 @@ public class Drivetrain implements PeriodicSubsystem {
   public Drivetrain(SparkMaxFactory.Configuration leftMasterConfig, SparkMaxFactory.Configuration rightMasterConfig, SparkMaxFactory.Configuration leftSlaveConfig, SparkMaxFactory.Configuration rightSlaveConfig, ClosedLoopConfig leftPID, ClosedLoopConfig rightPID) {
     this.leftPIDConfig = leftPID;
     this.rightPIDConfig = rightPID;
-    this.kEncoderRPMToFeetPerSecond = wheelDiameter/12;
-    this.kEncoderRevolutionToFeet = wheelDiameter * Math.PI;
       
     leftMaster = SparkMaxFactory.createSparkMax(leftMasterConfig);
     rightMaster = SparkMaxFactory.createSparkMax(rightMasterConfig);
@@ -135,8 +130,8 @@ public class Drivetrain implements PeriodicSubsystem {
 
     //convert from ticks/100ms to rev/sec to ft/s
     //(10/4096) * 0.5
-    leftVelocity = leftMasterEncoder.getVelocity() * leftPIDConfig.kEncoderVelocityToRPM * kEncoderRPMToFeetPerSecond;
-    rightVelocity = rightMasterEncoder.getVelocity() * rightPIDConfig.kEncoderVelocityToRPM * kEncoderRPMToFeetPerSecond;
+    leftVelocity = leftMasterEncoder.getVelocity() * leftPIDConfig.kEncoderVelocityToRPM;
+    rightVelocity = rightMasterEncoder.getVelocity() * rightPIDConfig.kEncoderVelocityToRPM;
   }
 
   public void resetEncoders() {
@@ -149,8 +144,8 @@ public class Drivetrain implements PeriodicSubsystem {
   } 
 
   public void updateDistanceTraveled() {
-    double distanceL = leftMasterEncoderValue * kEncoderRevolutionToFeet;
-    double distanceR = rightMasterEncoderValue * kEncoderRevolutionToFeet;
+    double distanceL = leftMasterEncoderValue;
+    double distanceR = rightMasterEncoderValue;
     p_IO.distanceTraveled = (distanceL + distanceR)/2;
   }
 

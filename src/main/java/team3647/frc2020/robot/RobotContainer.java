@@ -3,10 +3,12 @@ package team3647.frc2020.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import team3647.frc2020.commands.ArcadeDrive;
 import team3647.frc2020.commands.GoStraightDistancePID;
 import team3647.frc2020.commands.IndexerManualMode;
-import team3647.frc2020.commands.OrganizeFeeder;
+import team3647.frc2020.commands.TunnelIn;
+import team3647.frc2020.commands.TunnelOut;
 import team3647.frc2020.inputs.Joysticks;
 import team3647.frc2020.subsystems.Drivetrain;
 import team3647.frc2020.subsystems.Hood;
@@ -54,7 +56,7 @@ public class RobotContainer {
     controller.dPadRight.whenActive(new InstantCommand(() -> hood.setPosition(1)));
 
     //automatic organize feeder
-    controller.buttonA.whenHeld(new OrganizeFeeder(m_Indexer));
+    controller.buttonA.whenHeld(new SequentialCommandGroup(new TunnelOut(m_Indexer), new TunnelIn(m_Indexer).withTimeout(0.5)));
   }
 
   public void init(){
