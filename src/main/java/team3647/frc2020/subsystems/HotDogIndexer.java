@@ -16,7 +16,7 @@ public class HotDogIndexer implements PeriodicSubsystem {
     private final VictorSPX tunnelBeltRoller;
     private final DigitalInput tunnelBallDetection;
 
-    private boolean hasBallInTunnel;
+    private boolean bannerSensorValue;
 
     public HotDogIndexer(TalonSRXFactory.Configuration RVConfig, VictorSPXFactory.Configuration LVConfig, VictorSPXFactory.Configuration hRollerConfig, VictorSPXFactory.Configuration TBConfig, int ballDetectPin) {
         rightVerticalRoller = TalonSRXFactory.createTalon(RVConfig);
@@ -49,14 +49,14 @@ public class HotDogIndexer implements PeriodicSubsystem {
     }
 
     public boolean getTunnelBallDetection() {
-        return hasBallInTunnel;
+        return bannerSensorValue;
     }
 
     @Override
     public void readPeriodicInputs() {
         // TODO Auto-generated method stub
         PeriodicSubsystem.super.readPeriodicInputs();
-        this.hasBallInTunnel = tunnelBallDetection.get();
+        this.bannerSensorValue = !tunnelBallDetection.get();
     }
 
     @Override
