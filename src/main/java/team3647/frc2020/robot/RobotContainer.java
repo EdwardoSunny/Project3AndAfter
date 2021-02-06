@@ -19,7 +19,7 @@ import team3647.frc2020.subsystems.HotDogIndexer;
 public class RobotContainer {
   private final Joysticks controller = new Joysticks(0);
 
-  public final Drivetrain dt = new Drivetrain(Constants.leftMasterConfig, Constants.rightMasterConfig, Constants.leftSlaveConfig, Constants.rightSlaveConfig, Constants.leftMasterPIDConfig, Constants.rightMasterPIDConfig);
+  public final Drivetrain dt = new Drivetrain(Constants.leftMasterConfig, Constants.rightMasterConfig, Constants.leftSlaveConfig, Constants.rightSlaveConfig, Constants.leftMasterPIDConfig, Constants.rightMasterPIDConfig, Constants.driveWheelDiameter);
   private final CommandScheduler m_commandScheduler = CommandScheduler.getInstance();
   public final Hood hood = new Hood(Constants.hoodPWMPortChannel);
 

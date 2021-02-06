@@ -1,10 +1,12 @@
 package team3647.frc2020.subsystems;
 
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpiutil.math.MathUtil;
 import team3647.frc2020.robot.Constants;
+import team3647.lib.drivers.ClosedLoopFactory;
 import team3647.lib.drivers.SparkMaxFactory;
 import team3647.lib.drivers.ClosedLoopFactory.ClosedLoopConfig;
 
@@ -15,8 +17,10 @@ public class Drivetrain implements PeriodicSubsystem {
   private final CANSparkMax rightMaster;
   private final CANSparkMax leftSlave;
   private final CANSparkMax rightSlave;
-  private final double kWheelDiameter = Constants.driveWheelDiameter;
+  private final double kWheelDiameter;
 
+  private final CANPIDController leftPIDController;
+  private final CANPIDController rightPIDController;
   private double leftPosition;
   private double rightPosition;
   private double leftVelocity;
@@ -43,15 +47,18 @@ public class Drivetrain implements PeriodicSubsystem {
   private double m_rightSideInvertMultiplier = 1.0;
 
 
-  public Drivetrain(SparkMaxFactory.Configuration leftMasterConfig, SparkMaxFactory.Configuration rightMasterConfig, SparkMaxFactory.Configuration leftSlaveConfig, SparkMaxFactory.Configuration rightSlaveConfig, ClosedLoopConfig leftPID, ClosedLoopConfig rightPID) {
+  public Drivetrain(SparkMaxFactory.Configuration leftMasterConfig, SparkMaxFactory.Configuration rightMasterConfig, 
+  SparkMaxFactory.Configuration leftSlaveConfig, SparkMaxFactory.Configuration rightSlaveConfig, ClosedLoopConfig leftPID, ClosedLoopConfig rightPID, double driveWheelDiameter) {
     this.leftPIDConfig = leftPID;
     this.rightPIDConfig = rightPID;
+    this.kWheelDiameter = driveWheelDiameter;
       
     leftMaster = SparkMaxFactory.createSparkMax(leftMasterConfig);
     rightMaster = SparkMaxFactory.createSparkMax(rightMasterConfig);
     leftSlave = SparkMaxFactory.createSparkMax(leftSlaveConfig);
     rightSlave = SparkMaxFactory.createSparkMax(rightSlaveConfig);
-
+    leftPIDController = ClosedLoopFactory.createSparkMaxPIDController(leftMaster, leftMasterEncoder, leftPIDConfig, 0);
+    rightPIDController = ClosedLoopFactory.createSparkMaxPIDController(rightMaster, rightMasterEncoder, rightPIDConfig, 0);
     leftMasterEncoder = leftMaster.getEncoder();
     rightMasterEncoder = rightMaster.getEncoder();
 
