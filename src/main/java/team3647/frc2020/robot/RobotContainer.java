@@ -26,7 +26,7 @@ public class RobotContainer {
   public final HotDogIndexer m_Indexer = new HotDogIndexer(Constants.rightRollersConfig, Constants.leftRollersConfig, Constants.horizontalRollersConfig, Constants.tunnelConfig, Constants.ballDetectionPin);
 
   //public final Command autonomousCommand = new GoStraightDistance(dt, 10);
-  public final Command autonomousCommand = new GoStraightDistancePID(dt, 10, Constants.kP); 
+  public final Command autonomousCommand = new GoStraightDistancePID(dt, 10, Constants.kP, Constants.kI, Constants.kD); 
   public RobotContainer() {
     configButtonBindings();
     m_commandScheduler.registerSubsystem(dt, m_Indexer);
