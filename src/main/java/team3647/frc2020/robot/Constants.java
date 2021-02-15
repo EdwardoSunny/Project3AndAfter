@@ -81,14 +81,6 @@ public final class Constants {
     public static final ClosedLoopConfig rightMasterPIDConfig = new ClosedLoopConfig()
         .encoderVelocityToRPM(gearboxReduction).encoderTicksToUnits(neoRotationsToMeter)
         .maxVelocity(kMaxSpeedMeterPerSecond).configPID(kP, kI, kD);
-    //indexer constants
-
-    public static final int frontRollerPin = 24;
-    public static final int LorganizingRollerPin = 22;
-    public static final int RorganizingRollerPin = 21;
-    public static final int tunnelRollerPin = 23;
-    public static final int ballDetectionPin = 1;
-    public static final boolean rightRollerInvert = true;
 
     //Hot dog indexer configs
     public static final int leftVerticalRollersPin = 22;
@@ -118,22 +110,12 @@ public final class Constants {
             new VictorSPXFactory.Configuration(horizontalRollersPin)
                     .setInverted(horizontalRollersInverted).configOpenLoopRampRate(.3);
 
-
-
-
-
-
-    //Indexer configs
-    /*public static final VictorSPXFactory.Configuration frontRollerConfig = 
-        new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
-    public static final VictorSPXFactory.Configuration tunnelRollerConfig = 
-        new VictorSPXFactory.Configuration(tunnelRollerPin).configOpenRampRate(0.3);
-
-    public static final VictorSPXFactory.Configuration LorganizingRollerConfig = 
-        new VictorSPXFactory.Configuration(frontRollerPin).configOpenLoopRampRate(0.3).setPDPSlot(10);
-    public static final VictorSPXFactory.Configuration RorganizingRollerConfig = 
-        new VictorSPXFactory.Configuration(frontRollerPin).setInverted(rightRollerInvert);*/
-        
+    //intake configs
+    public static final int innerSolenoidPin = 3;
+    public static final int outerSolenoidPin = 4;
+    public static final int intakeMotorPin = 8;
+    public static TalonSRXFactory.Configuration intakeMotorConfig = 
+            new TalonSRXFactory.Configuration(intakeMotorPin, true).configOpenLoopRampRate(0.3);
 
 }
 

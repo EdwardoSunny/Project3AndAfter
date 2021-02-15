@@ -10,41 +10,41 @@ public class Intake implements PeriodicSubsystem {
     private final Solenoid inner;
     private final Solenoid outer;
     private final TalonSRX intakeMotor;
-    private boolean innerExtended;
-    private boolean outerExtended;
+    private IntakeState state;
 
-    public Intake(int leftPairPin, int rightPairPin, TalonSRXFactory.Configuration intakeMotorConfig) {
-        this.inner = new Solenoid(leftPairPin);
-        this.outer = new Solenoid(rightPairPin);
+    public Intake(int innerPairPin, int outerPairPin, TalonSRXFactory.Configuration intakeMotorConfig) {
+        this.inner = new Solenoid(innerPairPin);
+        this.outer = new Solenoid(outerPairPin);
         this.intakeMotor = TalonSRXFactory.createTalon(intakeMotorConfig);
     }
 
     public enum IntakeState {
-        GROUND, LOADING_STATION, TACOBELL, STOWED
+        GROUND(true, true), LOADING_STATION(true, false), TACOBELL(false, true), STOWED(false, false);
+
+        public final boolean innerCond;
+        public final boolean outerCond;
+
+        IntakeState(boolean innerExtend, boolean outerExtend) {
+            this.innerCond = innerExtend;
+            this.outerCond = outerExtend;
+        }
+
     }
 
     public void setIntakeMode(IntakeState state) {
-        switch (state) {
-            case GROUND:
-                if (innerExtended && !outerExtended) {
-                    inner.set(false);
-                }
-                outer.set(true);
-                inner.set(true);
-                break;
-            case LOADING_STATION:
-                inner.set(true);
-                outer.set(false);
-                break;
-            case TACOBELL:
-                inner.set(false);
-                outer.set(true);
-                break;
-            case STOWED:
-                inner.set(false);
-                outer.set(false);
-                break;
-        }
+        this.state = state;
+    }
+
+    public void moveInner() {
+        inner.set(state.innerCond);
+    }
+
+    public void moveOuter() {
+        outer.set(state.outerCond);
+    }
+
+    public void retractInner() {
+        inner.set(false);
     }
 
     public void setOpenLoop(double demand) {
@@ -63,8 +63,6 @@ public class Intake implements PeriodicSubsystem {
     public void readPeriodicInputs() {
         // TODO Auto-generated method stub
         PeriodicSubsystem.super.readPeriodicInputs();
-        innerExtended = this.inner.get();
-        outerExtended = this.outer.get();
     }
 
     @Override
@@ -79,12 +77,10 @@ public class Intake implements PeriodicSubsystem {
         PeriodicSubsystem.super.end();
     }
 
-
-
     @Override
     public String getName() {
         // TODO Auto-generated method stub
-        return null;
+        return "Intake";
     }
     
 }

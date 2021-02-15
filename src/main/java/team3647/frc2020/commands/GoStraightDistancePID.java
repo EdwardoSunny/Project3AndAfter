@@ -50,10 +50,11 @@ public class GoStraightDistancePID extends CommandBase {
         }
         double outputSpeed = kP * error + kI * errorSum * deltaTime + kD * errorRate; 
         dt.arcadeDrive(outputSpeed, 0);
-        if (Math.abs(error) < 0.2) {
+        if (Math.abs(error) < 0.1) {
             atSetpoint = true;
         }
         previousError = error;
+        lastTimeUpdate = Timer.getFPGATimestamp();
     }
 
     @Override 
