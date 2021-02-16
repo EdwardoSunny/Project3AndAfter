@@ -11,6 +11,7 @@ public class GoStraightDistance extends CommandBase {
     public GoStraightDistance(Drivetrain dt, double targetDistance) {
         this.m_dt = dt;
         this.distance = Units.feetToMeters(targetDistance);
+        addRequirements(dt);
     }
 
     @Override

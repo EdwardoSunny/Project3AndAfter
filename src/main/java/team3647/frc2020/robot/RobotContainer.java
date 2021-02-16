@@ -3,17 +3,20 @@ package team3647.frc2020.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import team3647.frc2020.commands.ArcadeDrive;
 import team3647.frc2020.commands.GoStraightDistancePID;
 import team3647.frc2020.commands.GroundIntake;
 import team3647.frc2020.commands.IndexerManualMode;
+import team3647.frc2020.commands.LoadBalls;
 import team3647.frc2020.commands.LoadingStationIntake;
 import team3647.frc2020.commands.StowIntake;
 import team3647.frc2020.commands.TunnelIn;
 import team3647.frc2020.commands.TunnelOut;
 import team3647.frc2020.inputs.Joysticks;
+import team3647.frc2020.subsystems.BallStopper;
 import team3647.frc2020.subsystems.Drivetrain;
 import team3647.frc2020.subsystems.Hood;
 import team3647.frc2020.subsystems.HotDogIndexer;
@@ -29,6 +32,7 @@ public class RobotContainer {
   private final CommandScheduler m_commandScheduler = CommandScheduler.getInstance();
   public final Hood hood = new Hood(Constants.hoodPWMPortChannel);
   public final Intake intake = new Intake(Constants.innerSolenoidPin, Constants.outerSolenoidPin, Constants.intakeMotorConfig);
+  public final BallStopper stopper = new BallStopper(Constants.solenoidPin);
 
   public final HotDogIndexer m_Indexer = new HotDogIndexer(Constants.rightRollersConfig, Constants.leftRollersConfig, Constants.horizontalRollersConfig, Constants.tunnelConfig, Constants.bannerSensorPin);
 
@@ -65,10 +69,11 @@ public class RobotContainer {
 
     //intake positions
     //GroundIntake
-    coController.leftTrigger.whenActive(new SequentialCommandGroup(new RunCommand(intake::retractInner, intake).withTimeout(0.5), new GroundIntake(intake).withTimeout(0.5)));
-    coController.rightBumper.whenActive(new LoadingStationIntake(intake));
-    coController.leftTrigger.whenReleased(new StowIntake(intake));
+    coController.leftTrigger.whenActive(new SequentialCommandGroup(new RunCommand(intake::retractInner, intake).withTimeout(0.5), new ParallelCommandGroup(new GroundIntake(intake), new LoadBalls(m_Indexer, stopper))));
+    //loading station
+    coController.rightBumper.whenActive(new LoadingStationIntake(intake).withTimeout(0.5));
     //stowed
+    coController.leftTrigger.whenReleased(new StowIntake(intake).withTimeout(0.5));
   }
 
   public void init(){

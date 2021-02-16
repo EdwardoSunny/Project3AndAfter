@@ -5,7 +5,6 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpiutil.math.MathUtil;
-import team3647.frc2020.robot.Constants;
 import team3647.lib.drivers.ClosedLoopFactory;
 import team3647.lib.drivers.SparkMaxFactory;
 import team3647.lib.drivers.ClosedLoopFactory.ClosedLoopConfig;

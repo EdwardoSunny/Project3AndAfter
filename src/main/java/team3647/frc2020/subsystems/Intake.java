@@ -19,14 +19,16 @@ public class Intake implements PeriodicSubsystem {
     }
 
     public enum IntakeState {
-        GROUND(true, true), LOADING_STATION(true, false), TACOBELL(false, true), STOWED(false, false);
+        GROUND(true, true, 0.7), LOADING_STATION(true, false, 0), TACOBELL(false, true, 0), STOWED(false, false, 0);
 
         public final boolean innerCond;
         public final boolean outerCond;
+        public final double motorDemand;
 
-        IntakeState(boolean innerExtend, boolean outerExtend) {
+        IntakeState(boolean innerExtend, boolean outerExtend, double motorDemand) {
             this.innerCond = innerExtend;
             this.outerCond = outerExtend;
+            this.motorDemand = motorDemand;
         }
 
     }
@@ -47,16 +49,12 @@ public class Intake implements PeriodicSubsystem {
         inner.set(false);
     }
 
+    public void spinIntakeMotor() {
+        setOpenLoop(state.motorDemand);
+    }
+
     public void setOpenLoop(double demand) {
         this.intakeMotor.set(ControlMode.PercentOutput, demand);
-    }
-
-    public void rollBallsIn(double demand) {
-        setOpenLoop(-demand);
-    }
-
-    public void rollBallsOut(double demand) {
-        setOpenLoop(demand);
     }
 
     @Override

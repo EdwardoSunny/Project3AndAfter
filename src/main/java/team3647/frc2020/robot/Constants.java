@@ -116,6 +116,8 @@ public final class Constants {
     public static final int intakeMotorPin = 8;
     public static TalonSRXFactory.Configuration intakeMotorConfig = 
             new TalonSRXFactory.Configuration(intakeMotorPin, true).configOpenLoopRampRate(0.3);
+    
+    public static final int solenoidPin = 6;
 
 }
 

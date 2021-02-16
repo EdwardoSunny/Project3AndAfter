@@ -20,6 +20,8 @@ public class LoadingStationIntake extends CommandBase {
     public void execute() {
         intake.moveInner();
         intake.moveOuter();
+        intake.spinIntakeMotor();
+
     }
 
     @Override
