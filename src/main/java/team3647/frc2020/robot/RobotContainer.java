@@ -13,6 +13,7 @@ import team3647.frc2020.commands.IndexerManualMode;
 import team3647.frc2020.commands.LoadBalls;
 import team3647.frc2020.commands.LoadingStationIntake;
 import team3647.frc2020.commands.StowIntake;
+import team3647.frc2020.commands.TacoBell;
 import team3647.frc2020.commands.TunnelIn;
 import team3647.frc2020.commands.TunnelOut;
 import team3647.frc2020.inputs.Joysticks;
@@ -59,21 +60,25 @@ public class RobotContainer {
     controller.buttonX.whenActive(new InstantCommand(() -> dt.setSlow(!dt.getSlow()), dt));
 
     //what should the presets be?
-    controller.dPadDown.whenActive(new InstantCommand(() -> hood.setPosition(0)));
-    controller.dPadUp.whenActive(new InstantCommand(() -> hood.setPosition(0.3)));
-    controller.dPadLeft.whenActive(new InstantCommand(() -> hood.setPosition(0.6)));
-    controller.dPadRight.whenActive(new InstantCommand(() -> hood.setPosition(1)));
+    coController.dPadDown.whenActive(new InstantCommand(() -> hood.setPosition(0)));
+    coController.dPadUp.whenActive(new InstantCommand(() -> hood.setPosition(0.3)));
+    coController.dPadLeft.whenActive(new InstantCommand(() -> hood.setPosition(0.6)));
+    coController.dPadRight.whenActive(new InstantCommand(() -> hood.setPosition(1)));
 
     //automatic organize feeder
-    controller.buttonA.whenHeld(new SequentialCommandGroup(new TunnelOut(m_Indexer), new TunnelIn(m_Indexer).withTimeout(0.5)));
+    coController.buttonA.whenHeld(new SequentialCommandGroup(new TunnelOut(m_Indexer), new TunnelIn(m_Indexer).withTimeout(0.5)));
+    //indexer manual mode
+    coController.buttonB.whenHeld(new IndexerManualMode(m_Indexer, controller::getRightStickY));
 
     //intake positions
     //GroundIntake
     coController.leftTrigger.whenActive(new SequentialCommandGroup(new RunCommand(intake::retractInner, intake).withTimeout(0.5), new ParallelCommandGroup(new GroundIntake(intake), new LoadBalls(m_Indexer, stopper))));
     //loading station
-    coController.rightBumper.whenActive(new LoadingStationIntake(intake).withTimeout(0.5));
-    //stowed
+    coController.rightBumper.whenActive(new ParallelCommandGroup(new LoadingStationIntake(intake), new LoadBalls(m_Indexer, stopper)));
+    // stowed
     coController.leftTrigger.whenReleased(new StowIntake(intake).withTimeout(0.5));
+    // tacobell
+    coController.rightTrigger.whenActive(new ParallelCommandGroup(new TacoBell(intake), new TunnelOut(m_Indexer)));
   }
 
   public void init(){

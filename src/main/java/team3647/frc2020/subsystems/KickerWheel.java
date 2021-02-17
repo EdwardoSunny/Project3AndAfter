@@ -15,13 +15,7 @@ public class KickerWheel implements PeriodicSubsystem {
         this.kickerWheel = TalonSRXFactory.createTalon(kickerConfig);
         this.PIDConfig = PIDConfig;
         ClosedLoopFactory.configTalonPIDController(kickerWheel, FeedbackDevice.CTRE_MagEncoder_Relative, this.PIDConfig, 0);
-    }
-
-    public class PeriodicIO {
-        public double velocity;
-        public double position;
-    }
-      
+    } 
     
     @Override
     public String getName() {
