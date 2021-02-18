@@ -22,8 +22,6 @@ public class TacoBell extends CommandBase {
     public void execute() {
         m_intake.moveInner();
         m_intake.moveOuter();
-        m_intake.spinIntakeMotor();
-
     }
 
     @Override
