@@ -25,7 +25,7 @@ public class KickerWheel implements PeriodicSubsystem {
 
     class periodicIO {
         public double RPMDemand;
-        public double velocity;
+        public double RPMReading;
         public double feedforward;               
     }
 
@@ -53,7 +53,7 @@ public class KickerWheel implements PeriodicSubsystem {
     public void readPeriodicInputs() {
         // TODO Auto-generated method stub
         PeriodicSubsystem.super.readPeriodicInputs();
-        pIO.velocity = kickerWheel.getSelectedSensorPosition() * PIDConfig.kEncoderVelocityToRPM;
+        pIO.RPMReading = kickerWheel.getSelectedSensorPosition() * PIDConfig.kEncoderVelocityToRPM;
     }
 
     @Override
