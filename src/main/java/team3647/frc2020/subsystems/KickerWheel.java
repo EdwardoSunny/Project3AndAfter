@@ -26,7 +26,8 @@ public class KickerWheel implements PeriodicSubsystem {
     class periodicIO {
         public double RPMDemand;
         public double RPMReading;
-        public double feedforward;               
+        public double feedforward;      
+        public ControlMode controlMode;       
     }
 
     @Override
@@ -37,8 +38,18 @@ public class KickerWheel implements PeriodicSubsystem {
     public void setRPM(double demandVelocity) {
         this.pIO.RPMDemand = demandVelocity * PIDConfig.kEncoderVelocityToRPM;
         //loop time is 0.02 --> divide to find acceleration
-        double acceleration = (pIO.velocity - demandVelocity) / 0.02;
+        double acceleration = (pIO.RPMReading - demandVelocity) / 0.02;
         this.pIO.feedforward = feedforward.calculate(demandVelocity, acceleration);
+        this.pIO.controlMode = ControlMode.Velocity;
+    }
+
+    public void setOpenLoop(double demand) {
+        this.pIO.controlMode = ControlMode.PercentOutput;
+        this.pIO.feedforward = demand;
+    }
+
+    public double getRPM() {
+        return this.pIO.RPMReading;
     }
 
     @Override
@@ -60,7 +71,7 @@ public class KickerWheel implements PeriodicSubsystem {
     public void writePeriodicOutputs() {
         // TODO Auto-generated method stub
         PeriodicSubsystem.super.writePeriodicOutputs();
-        kickerWheel.set(ControlMode.Velocity, pIO.feedforward);
+        kickerWheel.set(pIO.controlMode, pIO.feedforward);
     }
     
     @Override
