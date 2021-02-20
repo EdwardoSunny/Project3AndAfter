@@ -10,14 +10,12 @@ public class AccelerateKickerWheel extends CommandBase {
     private double lastTimeupdate;
     private double previousError;
     private final double kP;
-    private final double kI;
     private final double kD;
 
-    public AccelerateKickerWheel(KickerWheel kicker, double demand, double kP, double kI, double kD) {
+    public AccelerateKickerWheel(KickerWheel kicker, double demand, double kP, double kD) {
         this.kicker = kicker;
         this.demandRPM = demand;
         this.kP = kP;
-        this.kI = kI;
         this.kD = kD;
     }
 
