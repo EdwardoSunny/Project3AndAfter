@@ -3,7 +3,6 @@ package team3647.frc2020.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import team3647.lib.drivers.ClosedLoopFactory;
 import team3647.lib.drivers.TalonSRXFactory;
@@ -24,7 +23,6 @@ public class KickerWheel implements PeriodicSubsystem {
     }
 
     class periodicIO {
-        public double RPMDemand;
         public double RPMReading;
         public double feedforward;      
         public ControlMode controlMode;       
@@ -35,11 +33,13 @@ public class KickerWheel implements PeriodicSubsystem {
 
     }
 
-    public void setRPM(double demandVelocity) {
-        this.pIO.RPMDemand = demandVelocity * PIDConfig.kEncoderVelocityToRPM;
+    public void setRPM(double demandRPM) {
         //loop time is 0.02 --> divide to find acceleration
-        double acceleration = (pIO.RPMReading - demandVelocity) / 0.02;
-        this.pIO.feedforward = feedforward.calculate(demandVelocity, acceleration);
+        double accelerationDemand = ((pIO.RPMReading - demandRPM) / 0.02);
+        //feedfoward metod return evlocity or volts or rpm?
+        //don't understand feedforward of flywheel or kicker
+        pIO.feedforward = (this.feedforward.calculate(demandRPM, accelerationDemand) / 12.0)
+            * (1023 / PIDConfig.maxVelocity);;
         this.pIO.controlMode = ControlMode.Velocity;
     }
 
